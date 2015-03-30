@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: "idea"
+apply plugin: "jetty"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+version = '1.0'
+
+repositories {
+	maven {
+        url 'http://172.17.0.59:8081/nexus/content/groups/public'
+    }
+    mavenCentral()
+    maven {
+        url 'http://oss.sonatype.org/content/repositories/github-releases/'
+    }
+    maven {
+        url 'http://clojars.org/repo'
+    }
+}
+
+ext {
+	junitVersion = '4.11'
+    springVersion = '4.1.6.RELEASE'
+    jerseyVersion = '2.9'
+    jasrsVersion = '2.0'
+    myBatisVersion = '3.2.2'
+    myBatisSpringVersion = '1.2.1'
+}
+
+dependencies {
+    compile "org.springframework:spring-core:$springVersion"
+	compile "org.springframework:spring-jdbc:$springVersion"
+	
+    compile "org.glassfish.jersey.core:jersey-client:$jerseyVersion"
+    compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+    compile "org.glassfish.jersey.ext:jersey-spring3:$jerseyVersion"
+	
+	compile "org.mybatis:mybatis:$myBatisVersion"
+    compile "org.mybatis:mybatis-spring:$myBatisSpringVersion"
+
+    runtime	'mysql:mysql-connector-java:5.1.32'
+    compile 'commons-dbcp:commons-dbcp:1.4'
+
+    testCompile "junit:junit:$junitVersion"
+}

@@ -15,7 +15,7 @@ public class UserApi {
 	@GET
 	@Path("/{status}/count")
 	@Produces(MediaType.TEXT_PLAIN)
-	public int getUserCountByStatus(@PathParam("status") final Short status) {
+	public int getUserCountByStatus(@PathParam("status") final int status) {
 		return userRepository.getUserCountByStatus(status);
 	}
 }

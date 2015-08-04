@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
-	@Select("SELECT COUNT(*) FROM user_info WHERE usr_status = #{status}")
-	int getUserCountByStatus(@Param("status") short status);
+	@Select("SELECT COUNT(*) FROM staff WHERE status = #{status}")
+	int getUserCountByStatus(@Param("status") int status);
 }

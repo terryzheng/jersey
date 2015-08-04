@@ -41,6 +41,7 @@ dependencies {
     compile "org.mybatis:mybatis-spring:$myBatisSpringVersion"
 
     runtime	'mysql:mysql-connector-java:5.1.32'
+    runtime 'org.postgresql:postgresql:9.4-1201-jdbc41'
     compile 'commons-dbcp:commons-dbcp:1.4'
 
     testCompile "junit:junit:$junitVersion"

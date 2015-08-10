@@ -1,11 +1,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://www.springframework.org/schema/rabbit
+       http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util-3.2.xsd
        http://www.springframework.org/schema/tx
@@ -48,5 +51,38 @@
 	<bean id="userRepository" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.demo.jersey.repository.UserRepository" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${redis.pool.maxTotal}" />
+		<property name="maxIdle" value="${redis.pool.maxIdle}" />
+		<property name="minIdle" value="${redis.pool.minIdle}" />
+		<property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}" />
+		<property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+		<property name="testOnReturn" value="${redis.pool.testOnReturn}" />
+	</bean>
+
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool"
+		destroy-method="destroy">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1" value="${redis.host}" />
+		<constructor-arg index="2" value="${redis.port}" type="int" />
+		<constructor-arg index="3" value="${redis.timeout}"
+			type="int" />
+	</bean>
+
+	<bean id="jedisTools" class="com.demo.jersey.common.JedisTools">
+		<property name="jedisPool" ref="jedisPool" />
+		<property name="dbIndex" value="0" />
+	</bean>
+	
+	<rabbit:connection-factory id="rabbitMQProducerConnectionFactory"
+		host="${amqp.host}" virtual-host="${amqp.vhost}" username="${amqp.username}"
+		password="${amqp.password}" port="${amqp.port}" />
+
+	<bean id="producer" class="com.zhaopin.rabbitMQ.producer.ProducerMq">
+		<constructor-arg ref="rabbitMQProducerConnectionFactory"></constructor-arg>
 	</bean>
 </beans>

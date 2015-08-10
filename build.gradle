@@ -8,10 +8,15 @@ targetCompatibility = 1.7
 version = '1.0'
 
 repositories {
-	maven {
-        url 'http://172.17.0.59:8081/nexus/content/groups/public'
+    if (System.getProperty('BUILD_ENV', 'external') != 'external') {
+        maven {
+            url 'http://172.17.0.59:8081/nexus/content/groups/public'
+        }
     }
     mavenCentral()
+    maven {
+        url 'http://192.168.7.153:8081/nexus/content/groups/public'
+    }
     maven {
         url 'http://oss.sonatype.org/content/repositories/github-releases/'
     }
@@ -27,22 +32,34 @@ ext {
     jasrsVersion = '2.0'
     myBatisVersion = '3.2.2'
     myBatisSpringVersion = '1.2.1'
+    slf4jVersion = '1.7.5'
+    log4jVersion = '1.2.17'
+    producerVersion = '1.6'
 }
 
 dependencies {
+	compile "log4j:log4j:$log4jVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+    
     compile "org.springframework:spring-core:$springVersion"
 	compile "org.springframework:spring-jdbc:$springVersion"
 	
     compile "org.glassfish.jersey.core:jersey-client:$jerseyVersion"
     compile "org.glassfish.jersey.containers:jersey-container-servlet:$jerseyVersion"
+    compile "org.glassfish.jersey.ext:jersey-mvc:$jerseyVersion"
     compile "org.glassfish.jersey.ext:jersey-spring3:$jerseyVersion"
 	
 	compile "org.mybatis:mybatis:$myBatisVersion"
     compile "org.mybatis:mybatis-spring:$myBatisSpringVersion"
 
-    runtime	'mysql:mysql-connector-java:5.1.32'
+	compile "org.graylog2:gelfj:1.1.7"
+	compile "com.zhaopin.rabbitMQ:producer:$producerVersion"
+
     runtime 'org.postgresql:postgresql:9.4-1201-jdbc41'
     compile 'commons-dbcp:commons-dbcp:1.4'
+    
+    compile 'redis.clients:jedis:2.6.2'
 
     testCompile "junit:junit:$junitVersion"
 }
